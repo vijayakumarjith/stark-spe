@@ -1,11 +1,12 @@
 import tweepy
 import numpy as np
 import streamlit as st
-consumer_key = st.secrets.consumer_key
-consumer_secret = st.secrets.consumer_secret
-access_token = st.secrets.access_token
-access_token_secret = st.secrets.access_token_secret
+consumer_key = st.secrets["cZNG415YYdgJcj0Fnd7CUDLmm"]
+consumer_secret = st.secrets["CtGguIDujnXiSmMHREFfnloG3JlBNFWqp0JxKbVuKPSXkZCvcd"]
+access_token = st.secrets["1174002413902036993-0FrOkGGaFx5bFW1WuRlQNsUMCjDQ7s"]
+access_token_secret = st.secrets["4XoHIrP9uNnbaTkJ2Gnjzke2Tqnp9HKagvtjuEF6APdWs"]
 
+# Authenticate with Twitter API
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 
