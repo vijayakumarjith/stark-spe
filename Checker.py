@@ -10,18 +10,19 @@ from firebase_admin import db
 import tweepy
 import model
 from lime import lime_tabular
+
 warnings.filterwarnings("ignore")
 try:
-    ranfor=pickle.load(open('model.pkl','rb'))
+    ranfor = pickle.load(open('model.pkl', 'rb'))
 except FileNotFoundError:
     explainer_lime = model.train_model(gen=True)
-    ranfor=pickle.load(open('model.pkl','rb'))
+    ranfor = pickle.load(open('model.pkl', 'rb'))
 
 st.set_page_config(page_title="Fake Account Checker", page_icon="👨‍💻")
 
 def explain(explainer_lime, input_data):
     exp_lime = explainer_lime.explain_instance(
-    np.array(input_data), ranfor.predict_proba, num_features=9)
+        np.array(input_data), ranfor.predict_proba, num_features=9)
     st.components.v1.html(exp_lime.as_html())
     st.pyplot(exp_lime.as_pyplot_figure())
 
@@ -59,7 +60,7 @@ if st.button("Predict"):
         username = username[1:]
     if "https://twitter.com/" in username:
         username = username[20:]
-    elif"twitter.com/" in username:
+    elif "twitter.com/" in username:
         username = username[12:]
     username = username.lower()
     ref = db.reference("/")
@@ -71,22 +72,22 @@ if st.button("Predict"):
         st.stop()
     except tweepy.Forbidden as e:
         st.markdown("The account you are looking for has been suspended for violating [X Rules](https://support.twitter.com/articles/18311), please check the Username entered.")
-        # ref = db.reference(f"/{username}")
-        # ref.set("Suspended")
         output = "Suspended"
         st.stop()
     except tweepy.Unauthorized:
         st.markdown("We are facing a technical issue, please try again later or submit an issue on the GitHub page")
         st.stop()
-    output=pred(data)
+    output = pred(data)
     ref = db.reference(f"/{username}")
-    if output == True :ref.set("Real")
-    else : ref.set("Fake")
+    if output == True:
+        ref.set("Real")
+    else:
+        ref.set("Fake")
     if output:
-        st.markdown(safe_html,unsafe_allow_html=True)
+        st.markdown(safe_html, unsafe_allow_html=True)
         explain(model.train_model(), data)
     elif output == "Suspended":
         st.markdown("The account you are looking for has been suspended for violating [X Rules](https://support.twitter.com/articles/18311), please check the Username entered.")
     else:
-        st.markdown(danger_html,unsafe_allow_html=True)
+        st.markdown(danger_html, unsafe_allow_html=True)
         explain(model.train_model(), data)
